@@ -1,0 +1,18 @@
+{
+    "name": "guildframework/mvc",
+    "description": "PHP MVC Framework",
+    "type": "library",
+    "keywords": [
+        "framework",
+        "php",
+        "mvc"
+    ],
+    "require": {
+        "php": ">=5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Guild\\": "library/"
+        }
+    }
+}
