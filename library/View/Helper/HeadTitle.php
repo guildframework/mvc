@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\View\Helper;
+namespace Guild\View\Helper;
 
 class HeadTitle {
 
@@ -19,11 +19,16 @@ class HeadTitle {
     }
 
     public function renderTitle() {
-        return implode($this->separator, $this->items);
+        $output = implode($this->separator, $this->items);
+        return '<title>' . $output . '</title>';
     }
 
     public function __toString() {
         return $this->renderTitle();
+    }
+    
+    public function setSeparator($separator) {
+        $this->separator = $separator;
     }
 
 }

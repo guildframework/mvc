@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\View\Helper;
+namespace Guild\View\Helper;
 
 class HeadLink {
 
@@ -11,6 +11,12 @@ class HeadLink {
         return $this;
     }
 
+    public function prependStylesheet($href) {
+        $items = $this->items;
+        array_unshift($items, array('type' => 'text/css', 'href' => $href, 'rel' => 'stylesheet'));
+        $this->items = $items;
+        return $this;
+    }
     public function __toString() {
         
         foreach ($this->items as $item) {

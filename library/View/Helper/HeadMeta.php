@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\View\Helper;
+namespace Guild\View\Helper;
 
 class HeadMeta {
 
