@@ -12,18 +12,19 @@ class View {
         'headtitle' => 'Guild\View\Helper\HeadTitle',
         'headmeta' => 'Guild\View\Helper\HeadMeta',
         'headstyle' => 'Guild\View\Helper\HeadStyle',
-       # 'useridentity' => 'Mvc\View\Helper\UserIdentity',
-       # 'gravatar' => 'Mvc\View\Helper\Gravatar',
+        'url' => 'Guild\View\Helper\Url',
+        'translate' => 'Guild\View\Helper\Translate',
+        # 'useridentity' => 'Guild\View\Helper\UserIdentity',
+        # 'gravatar' => 'Guild\View\Helper\Gravatar',
         'headlink' => 'Guild\View\Helper\HeadLink',
         'headscript' => 'Guild\View\Helper\HeadScript',
         'inlinescript' => 'Guild\View\Helper\InlineScript',
-    /*    'form' => 'Mvc\Form\View\Helper\Form',
-        'formlabel' => 'Mvc\Form\View\Helper\FormLabel',
-        'forminput' => 'Mvc\Form\View\Helper\FormInput',
-        'formrow' => 'Mvc\Form\View\Helper\FormRow',
-        'formbutton' => 'Mvc\Form\View\Helper\FormButton',
-        'formtextarea' => 'Mvc\Form\View\Helper\FormTextarea',*/
-        
+            /*    'form' => 'Guild\Form\View\Helper\Form',
+              'formlabel' => 'Guild\Form\View\Helper\FormLabel',
+              'forminput' => 'Guild\Form\View\Helper\FormInput',
+              'formrow' => 'Guild\Form\View\Helper\FormRow',
+              'formbutton' => 'Guild\Form\View\Helper\FormButton',
+              'formtextarea' => 'Guild\Form\View\Helper\FormTextarea', */
     );
     protected $__pluginCache = array();
 
@@ -45,7 +46,7 @@ class View {
         $this->content = ob_get_clean();
         require $this->layoutFile;
     }
-    
+
     public function __call($methodName, $argv) {
         $method = strtolower($methodName);
         if (array_key_exists($method, $this->helpers)) {
