@@ -4,6 +4,7 @@ namespace Guild\View;
 
 class View {
 
+    public static $config = array();
     protected $viewFile;
     protected $layoutFile;
     protected $model;
@@ -28,6 +29,17 @@ class View {
     );
     protected $__pluginCache = array();
 
+    public function __construct($configuration = array()) {
+        self::$config = $configuration;
+        $this->setBasePath();
+    }
+
+    protected function setBasePath() {
+        $basePath = new $this->helpers['basepath'];
+        $basePath->setBasePath(self::$config['base_path']);
+        $this->__pluginCache['basepath'] = $basePath;
+    }
+
     public function setViewFile($viewFile) {
         $this->viewFile = $viewFile;
     }
@@ -45,6 +57,10 @@ class View {
         require $this->viewFile;
         $this->content = ob_get_clean();
         require $this->layoutFile;
+    }
+
+    public function __get($name) {
+        return $this->model->get($name);
     }
 
     public function __call($methodName, $argv) {
