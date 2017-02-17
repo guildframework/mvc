@@ -19,6 +19,7 @@ class HeadScript {
     }
 
     public function __toString() {
+        $items = array();
         foreach ($this->items as $item) {
             $items[] = $this->itemToString($item);
         }
