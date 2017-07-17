@@ -5,9 +5,12 @@ namespace Guild\File;
 
 class Csv
 {
-    public function getData($file)
+    public function getData($filePath)
     {
-        $fileHandler = fopen($file, "r");
+        if (!file_exists($filePath)) {
+            throw new \Exception('File not found.');
+        }
+        $fileHandler = fopen($filePath, "r");
         $keys = fgetcsv($fileHandler);
         $array = array();
         while (!feof($fileHandler)) {
@@ -20,31 +23,30 @@ class Csv
         return $array;
     }
 
-    public function writeFile($file, $data)
+    public function parseCsv($filePath)
     {
-        $keys = array();
+        if (!file_exists($filePath)) {
+            throw new \Exception('File not found.');
+        }
+        $fileHandler = fopen($filePath, "r");
+        $array = array();
+        while (!feof($fileHandler)) {
+            $array[] = fgetcsv($fileHandler);
+        }
+        fclose($fileHandler);
+        return $array;
+    }
+
+    public function writeFile($filePath, $data)
+    {
+        $newFile = fopen($filePath, 'w+');
+        if (!file_exists($filePath)) {
+            throw new \Exception('New file could not be generated');
+        }
         foreach ($data as $row) {
-            foreach (array_keys($row) as $key){
-                if(!in_array($key,$keys)){
-                    $keys[]= $key;
-                }
-            }
-//            $keys = array_merge($keys,array_keys($row));
-//            $keys = array_keys($row);
+            fputcsv($newFile, $row);
         }
-        $fileHandle = fopen($file, 'w+');
-        fputcsv($fileHandle, $keys);
-        foreach ($data as $row){
-            $rowData = array();
-            foreach ($keys as $key){
-                if(isset($row[$key])){
-                    $rowData[] = $row[$key];
-                }
-            }
-            fputcsv($fileHandle, $rowData);
-        }
-        fclose($fileHandle);
-//        var_dump($keys);
+        fclose($newFile);
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\Form\View\Helper;
+namespace Guild\Form\View\Helper;
 
 class FormElement {
 
@@ -13,17 +13,18 @@ class FormElement {
 
     public function render($element) {
         $elementHelpers = array(
-            'textarea' => 'Mvc\Form\View\Helper\FormTextarea',
-            'select' => 'Mvc\Form\View\Helper\FormSelect',
+            'textarea' => 'Guild\Form\View\Helper\FormTextarea',
+            'select' => 'Guild\Form\View\Helper\FormSelect',
+            'file' => 'Guild\Form\View\Helper\FormFile',
+            'submit' => 'Guild\Form\View\Helper\FormSubmit',
         );
         $type = $element->getType();
         if(isset($type)){
             $helper = new $elementHelpers[$type];
         }  else {
             
-        $helper = new \Mvc\Form\View\Helper\FormInput();
+        $helper = new \Guild\Form\View\Helper\FormInput();
         }
-        #print_r($element->type);
         return $helper($element);
     }
 

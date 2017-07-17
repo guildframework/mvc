@@ -2,7 +2,8 @@
 
 namespace Guild\View;
 
-class View {
+class View
+{
 
     public static $config = array();
     protected $viewFile;
@@ -20,50 +21,59 @@ class View {
         'headlink' => 'Guild\View\Helper\HeadLink',
         'headscript' => 'Guild\View\Helper\HeadScript',
         'inlinescript' => 'Guild\View\Helper\InlineScript',
-            /*    'form' => 'Guild\Form\View\Helper\Form',
-              'formlabel' => 'Guild\Form\View\Helper\FormLabel',
-              'forminput' => 'Guild\Form\View\Helper\FormInput',
-              'formrow' => 'Guild\Form\View\Helper\FormRow',
-              'formbutton' => 'Guild\Form\View\Helper\FormButton',
-              'formtextarea' => 'Guild\Form\View\Helper\FormTextarea', */
+        'form' => 'Guild\Form\View\Helper\Form',
+        'formlabel' => 'Guild\Form\View\Helper\FormLabel',
+        'forminput' => 'Guild\Form\View\Helper\FormInput',
+        'formrow' => 'Guild\Form\View\Helper\FormRow',
+        'formbutton' => 'Guild\Form\View\Helper\FormButton',
+        'formsubmit' => 'Guild\Form\View\Helper\FormSubmit',
+        'formtextarea' => 'Guild\Form\View\Helper\FormTextarea',
     );
     protected $__pluginCache = array();
 
-    public function __construct($configuration = array()) {
+    public function __construct($configuration = array())
+    {
         self::$config = $configuration;
         $this->setBasePath();
     }
 
-    protected function setBasePath() {
+    protected function setBasePath()
+    {
         $basePath = new $this->helpers['basepath'];
         $basePath->setBasePath(self::$config['base_path']);
         $this->__pluginCache['basepath'] = $basePath;
     }
 
-    public function setViewFile($viewFile) {
+    public function setViewFile($viewFile)
+    {
         $this->viewFile = $viewFile;
     }
 
-    public function setLayoutFile($layoutFile) {
+    public function setLayoutFile($layoutFile)
+    {
         $this->layoutFile = $layoutFile;
     }
 
-    public function setModel($model) {
+    public function setModel($model)
+    {
         $this->model = $model;
     }
 
-    public function render() {
+    public function render()
+    {
         ob_start();
         require $this->viewFile;
         $this->content = ob_get_clean();
         require $this->layoutFile;
     }
 
-    public function __get($name) {
+    public function __get($name)
+    {
         return $this->model->get($name);
     }
 
-    public function __call($methodName, $argv) {
+    public function __call($methodName, $argv)
+    {
         $method = strtolower($methodName);
         if (array_key_exists($method, $this->helpers)) {
             return $this->helper($method, $argv);
@@ -72,7 +82,8 @@ class View {
         }
     }
 
-    public function helper($method, $argv) {
+    public function helper($method, $argv)
+    {
         if (!isset($this->__pluginCache[$method])) {
             $this->__pluginCache[$method] = new $this->helpers[$method];
         }

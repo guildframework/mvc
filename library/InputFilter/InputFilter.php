@@ -1,8 +1,8 @@
 <?php
 
-namespace Mvc\InputFilter;
+namespace Guild\InputFilter;
 
-use Mvc\InputFilter\Input;
+use Guild\InputFilter\Input;
 
 class InputFilter {
 

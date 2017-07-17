@@ -9,6 +9,9 @@ class Url {
     protected $id;
 
     public function __invoke($params = [], $options = [], $reuseMatchedParams = false) {
+//        echo '555';
+//        print_r($params);
+//        die();
         $url = '';
         if (isset($params['controller'])) {
             $url .= '/' . $params['controller'];

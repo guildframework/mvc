@@ -15,60 +15,39 @@ class Application
     public function __construct($configuration = array())
     {
         self::$config = $configuration;
-        # $this->autoload();
-        $this->getRoute();
-    }
-
-    private function getRoute()
-    {
-        $requestUrl = filter_input(INPUT_SERVER, 'REQUEST_URI');
-        $requestUrl = str_replace(self::$config['base_path'], "", $requestUrl);
-        if (($pos = strpos($requestUrl, '?')) !== false) {
-            $requestUrl = substr($requestUrl, 0, $pos);
-        }
-        $data = explode('/', $requestUrl);
-        $controller = 'index';
-        if (isset($data[0]) && !empty($data[0])) {
-            $controller = $data[0];
-        }
-        $action = 'index';
-        if (isset($data[1]) && !empty($data[1])) {
-            $action = $data[1];
-        }
-        $controller = preg_replace_callback('/(-.)/', array($this, 'camelCaseWord'), $controller);
-        self::$controller = ucfirst($controller);
-        self::$action = preg_replace_callback('/(-.)/', array($this, 'camelCaseWord'), $action);
-        self::$viewFile = './app/view/' . strtolower($controller) . '/' . $action . '.phtml';
-        self::$layoutFile = './app/view/layout/layout.phtml';
-    }
-
-    public function camelCaseWord($input)
-    {
-        $letter = str_replace('-', "", $input[0]);
-        $big = ucfirst($letter);
-        #  var_dump($big);
-        return $big;
     }
 
     public function run()
     {
-        spl_autoload_register(function ($class) {
-            $filePath = getcwd().'/app/' . $class . '.php';
-            $filePath = str_replace('\\', '/', $filePath);
-            include $filePath;
-        });
-        $controllerName = '\\Application\\Controller\\' . self::$controller . 'Controller';
-        $controller = new $controllerName();
-        $controller->setConfig(self::$config);
-        $actionName = self::$action . 'Action';
-        $viewModel = $controller->$actionName();
-        $view = new \Guild\View\View(self::$config);
-//        var_dump(self::$config);
-      //  $view->setBasePath(self::$baseName);
-        $view->setViewFile(self::$viewFile);
-        $view->setLayoutFile(self::$layoutFile);
-        $view->setModel($viewModel);
-        $view->render();
+        try {
+            $router = new Router();
+            spl_autoload_register(function ($class) {
+                $filePath = getcwd() . '/app/' . $class . '.php';
+                $filePath = str_replace('\\', '/', $filePath);
+                include $filePath;
+            });
+            $controllerName = '\\Application\\Controller\\' . $router->getController() . 'Controller';
+            $controller = new $controllerName();
+            $controller->setConfig(self::$config);
+            $actionName = $router->getAction() . 'Action';
+            if (!method_exists($controller, $actionName)) {
+                throw new \Exception('Requested action does not exists');
+            }
+            $viewModel = $controller->$actionName();
+            $viewFile = './app/view/' . strtolower($router->getController()) . '/' . $router->getAction() . '.phtml';
+            if(!file_exists($viewFile)){
+                throw new \Exception('Template file not found');
+            }
+            $layoutFile = './app/view/layout/layout.phtml';
+            $view = new \Guild\View\View(self::$config);
+            $view->setViewFile($viewFile);
+            $view->setLayoutFile($layoutFile);
+            $view->setModel($viewModel);
+            $view->render();
+        } catch (\Exception $exception) {
+            print_r($exception->getMessage());
+        }
+
     }
 
     /*

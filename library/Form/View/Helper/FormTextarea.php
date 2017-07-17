@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\Form\View\Helper;
+namespace Guild\Form\View\Helper;
 
 class FormTextarea extends AbstractHelper {
 

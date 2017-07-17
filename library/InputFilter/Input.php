@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\InputFilter;
+namespace Guild\InputFilter;
 
 class Input {
 

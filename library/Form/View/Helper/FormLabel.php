@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\Form\View\Helper;
+namespace Guild\Form\View\Helper;
 
 class FormLabel extends AbstractHelper {
 
@@ -13,6 +13,9 @@ class FormLabel extends AbstractHelper {
 
     public function openTag($element = null) {
         $labelAttributes = $element->getOption('label_attributes');
+        if ($element->getOption('layout') == 'horizontal') {
+            $labelAttributes['class'] .= ' control-label';
+        }
         if (null === $labelAttributes) {
             return '<label>';
         }
