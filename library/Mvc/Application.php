@@ -2,6 +2,9 @@
 
 namespace Guild\Mvc;
 
+use Guild\Http\Response;
+use Guild\View\View;
+
 class Application
 {
 
@@ -33,26 +36,39 @@ class Application
             if (!method_exists($controller, $actionName)) {
                 throw new \Exception('Requested action does not exists');
             }
-            $viewModel = $controller->$actionName();
-            $viewFile = './app/view/' . strtolower($router->getController()) . '/' . $router->getAction() . '.phtml';
-            if(!file_exists($viewFile)){
-                throw new \Exception('Template file not found');
+            $response = $controller->$actionName();
+            if($response instanceof Response) {
+//            $viewModel = $controller->$actionName();
+                $this->completeRequest($response);
+
+            }else {
+                $view = new View(self::$config);
+//               echo '<pre>';
+//                print_r($response);
+//                die();
+                $viewFile = './app/view/' . strtolower($router->getController()) . '/' . $router->getAction() . '.phtml';
+                if (!file_exists($viewFile)) {
+                    throw new \Exception('Template file not found');
+                }
+                $layoutFile = './app/view/layout/layout.phtml';
+//                $view = new \Guild\View\View(self::$config);
+                $view->setViewFile($viewFile);
+                $view->setLayoutFile($layoutFile);
+                $view->setModel($response);
+//                $view->setModel($viewModel);
+                $view->render();
             }
-            $layoutFile = './app/view/layout/layout.phtml';
-            $view = new \Guild\View\View(self::$config);
-            $view->setViewFile($viewFile);
-            $view->setLayoutFile($layoutFile);
-            $view->setModel($viewModel);
-            $view->render();
         } catch (\Exception $exception) {
             print_r($exception->getMessage());
         }
 
     }
 
-    /*
-      protected function getViewFile() {
-      return './app/view/' . strtolower(self::$controller) . '/' . self::$action . '.phtml';
-      }
-     */
+    protected function completeRequest($response)
+    {
+        $response->sendHeaders();
+        $response->sendContent();
+//        echo $response->getContent();
+    }
+
 }

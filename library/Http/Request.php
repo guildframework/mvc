@@ -31,13 +31,23 @@ class Request
         return false;
     }
 
-    public function getFiles($name = null)
+    public function getFiles($field = null)
     {
 //        var_dump($_FILES);
-        if ($_FILES[$name]['error'] != 0) {
-            throw new \Exception($this->getFileUploadError($_FILES[$name]['error']));
+//        die();
+        if ($_FILES[$field]['error'] != 0) {
+            throw new \Exception($this->getFileUploadError($_FILES[$field]['error']));
         }
-        return $_FILES[$name]['tmp_name'];
+        return $_FILES[$field]['tmp_name'];
+    }
+
+
+    public function getFileName($field)
+    {
+        if ($_FILES[$field]['error'] != 0) {
+            throw new \Exception($this->getFileUploadError($_FILES[$field]['error']));
+        }
+        return $_FILES[$field]['name'];
     }
 
     protected function getFileUploadError($code)

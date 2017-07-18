@@ -5,6 +5,16 @@ namespace Guild\File;
 
 class Csv
 {
+
+    public function getCsvOutput($data)
+    {
+        $out = fopen('php://output', 'w');
+        foreach ($data as $row) {
+            fputcsv($out, $row);
+        }
+        fclose($out);
+    }
+
     public function getData($filePath)
     {
         if (!file_exists($filePath)) {
