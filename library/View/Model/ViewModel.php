@@ -20,5 +20,4 @@ class ViewModel {
         return $this->variables[$name];
     }
 
-
 }

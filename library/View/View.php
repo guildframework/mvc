@@ -2,8 +2,16 @@
 
 namespace Guild\View;
 
+use Guild\Http\Response;
+use Guild\Mvc\Router;
+use Guild\View\Model\ViewModel;
+
 class View
 {
+    /**
+     * @var Response
+     */
+    protected $response;
 
     public static $config = array();
     protected $viewFile;
@@ -44,14 +52,18 @@ class View
         $this->__pluginCache['basepath'] = $basePath;
     }
 
-    public function setViewFile($viewFile)
+    public function setViewFile(Router $router)
     {
-        $this->viewFile = $viewFile;
+        $this->viewFile = './app/view/' . strtolower($router->getController()) . '/' . $router->getAction() . '.phtml';
+        if (!file_exists($this->viewFile)) {
+            throw new \Exception('Template file not found');
+        }
+        return $this;
     }
 
-    public function setLayoutFile($layoutFile)
+    public function setLayoutFile()
     {
-        $this->layoutFile = $layoutFile;
+        $this->layoutFile = './app/view/layout/layout.phtml';
     }
 
     public function setModel($model)
@@ -59,12 +71,18 @@ class View
         $this->model = $model;
     }
 
-    public function render()
+    public function render(ViewModel $model)
     {
+        $this->model = $model;
+        $response = new Response();
         ob_start();
-        require $this->viewFile;
+        include $this->viewFile;
         $this->content = ob_get_clean();
-        require $this->layoutFile;
+        ob_start();
+        include $this->layoutFile;
+        $output = ob_get_clean();
+        $response->setContent($output);
+        return $response;
     }
 
     public function __get($name)
@@ -91,6 +109,15 @@ class View
             return call_user_func_array($this->__pluginCache[$method], $argv);
         }
         return $this->__pluginCache[$method];
+    }
+
+    /**
+     * Get response object
+     * @return null|Response
+     */
+    public function getResponse()
+    {
+        return $this->response;
     }
 
 }

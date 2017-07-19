@@ -47,4 +47,5 @@ class Router
         return $filter->dashToCamelCase($action, false);
 //        return $filter->dashToCamelCase($uriParts[1], false);
     }
+
 }

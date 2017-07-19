@@ -2,18 +2,13 @@
 
 namespace Guild\Mvc;
 
+use Guild\Http\Headers;
 use Guild\Http\Response;
 use Guild\View\View;
 
 class Application
 {
-
     public static $config = array();
-    public static $baseName = null;
-    public static $controller = null;
-    public static $action = null;
-    public static $viewFile = null;
-    public static $layoutFile = null;
 
     public function __construct($configuration = array())
     {
@@ -36,27 +31,19 @@ class Application
             if (!method_exists($controller, $actionName)) {
                 throw new \Exception('Requested action does not exists');
             }
-            $response = $controller->$actionName();
-            if($response instanceof Response) {
-//            $viewModel = $controller->$actionName();
-                $this->completeRequest($response);
+            $model = $controller->$actionName();
+            if ($model instanceof Response) {
+                $this->completeRequest($model);
 
-            }else {
+            } else {
                 $view = new View(self::$config);
-//               echo '<pre>';
-//                print_r($response);
-//                die();
-                $viewFile = './app/view/' . strtolower($router->getController()) . '/' . $router->getAction() . '.phtml';
-                if (!file_exists($viewFile)) {
-                    throw new \Exception('Template file not found');
-                }
-                $layoutFile = './app/view/layout/layout.phtml';
-//                $view = new \Guild\View\View(self::$config);
-                $view->setViewFile($viewFile);
-                $view->setLayoutFile($layoutFile);
-                $view->setModel($response);
-//                $view->setModel($viewModel);
-                $view->render();
+                $view->setViewFile($router)->setLayoutFile();
+                $response = $view->render($model);
+                $response->setStatusCode(200);
+                $headers = new Headers();
+                $headers->addHeaders(array('Content-Type' => 'text/html;charset=UTF-8',));
+                $response->setHeaders($headers);
+                $this->completeRequest($response);
             }
         } catch (\Exception $exception) {
             print_r($exception->getMessage());
