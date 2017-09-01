@@ -16,6 +16,7 @@ class FormElement {
             'textarea' => 'Guild\Form\View\Helper\FormTextarea',
             'select' => 'Guild\Form\View\Helper\FormSelect',
             'file' => 'Guild\Form\View\Helper\FormFile',
+            'checkbox' => 'Guild\Form\View\Helper\FormCheckbox',
             'submit' => 'Guild\Form\View\Helper\FormSubmit',
         );
         $type = $element->getType();

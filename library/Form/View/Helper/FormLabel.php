@@ -2,19 +2,26 @@
 
 namespace Guild\Form\View\Helper;
 
-class FormLabel extends AbstractHelper {
+class FormLabel extends AbstractHelper
+{
 
-    public function __invoke($element = null) {
+    public function __invoke($element = null)
+    {
         $openTag = $this->openTag($element);
         $content = $element->getOption('label');
         $closeTag = $this->closeTag($element);
         return $openTag . $content . $closeTag;
     }
 
-    public function openTag($element = null) {
+    public function openTag($element = null)
+    {
         $labelAttributes = $element->getOption('label_attributes');
         if ($element->getOption('layout') == 'horizontal') {
-            $labelAttributes['class'] .= ' control-label';
+            if ($labelAttributes['class']) {
+                $labelAttributes['class'] .= ' control-label';
+            } else {
+                $labelAttributes['class'] = ' control-label';
+            }
         }
         if (null === $labelAttributes) {
             return '<label>';
@@ -24,7 +31,8 @@ class FormLabel extends AbstractHelper {
         }
     }
 
-    public function closeTag() {
+    public function closeTag()
+    {
         return '</label>';
     }
 

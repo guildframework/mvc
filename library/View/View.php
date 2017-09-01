@@ -5,6 +5,7 @@ namespace Guild\View;
 use Guild\Http\Response;
 use Guild\Mvc\Router;
 use Guild\View\Model\ViewModel;
+use Guild\Filter\Word\CamelCase;
 
 class View
 {
@@ -54,9 +55,12 @@ class View
 
     public function setViewFile(Router $router)
     {
-        $this->viewFile = './app/view/' . strtolower($router->getController()) . '/' . $router->getAction() . '.phtml';
+        $filter = new CamelCase();
+        $templateFolder = $filter->camelCaseToDash($router->getController());
+        $fileName = $filter->camelCaseToDash($router->getAction());
+        $this->viewFile = './app/view/' . $templateFolder . '/' . $fileName . '.phtml';
         if (!file_exists($this->viewFile)) {
-            throw new \Exception('Template file not found');
+            throw new \Exception('Template file "' . $this->viewFile . '" not found');
         }
         return $this;
     }
