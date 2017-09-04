@@ -8,11 +8,12 @@ class Csv
 
     public function getCsvOutput($data)
     {
+        ob_start();
         $out = fopen('php://output', 'w');
         foreach ($data as $row) {
             fputcsv($out, $row);
         }
-        fclose($out);
+        return ob_get_contents();
     }
 
     public function getData($filePath)
